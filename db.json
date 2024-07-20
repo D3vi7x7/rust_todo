@@ -1,4 +1,6 @@
 {
   "Buy": true,
-  "buy fruis": true
+  "another_task": true,
+  "buy fruis": false,
+  "test_task": true
 }

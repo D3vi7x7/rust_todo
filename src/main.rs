@@ -27,6 +27,10 @@ fn main() {
         }
     }else if action == "show" {
         todo.show();
+    }else if action == "show-c"{
+        todo.show_c();
+    }else if action == "show-ic"{
+        todo.show_ic();
     } else if action == "remove" {
         match todo.remove(&item) {
             None => println!("'{}' is not present in the list", item),
@@ -40,13 +44,13 @@ fn main() {
     }
 }
 
-struct Todo {
+pub struct Todo {
     // use rust built in HashMap to store key - val pairs
     map: HashMap<String, bool>,
 }
 
 impl Todo {
-    fn new() -> Result<Todo, std::io::Error> {
+    pub fn new() -> Result<Todo, std::io::Error> {
         let f = std::fs::OpenOptions::new()
             .write(true)
             .create(true)
@@ -61,13 +65,13 @@ impl Todo {
             Err(e) => panic!("An error occurred: {}", e),
         }
     }
-    fn insert(&mut self, key: String) {
+    pub fn insert(&mut self, key: String) {
         // insert a new item into our map.
         // active state is set to true by default.
         self.map.insert(key, true);
     }
 
-    fn save(self) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn save(self) -> Result<(), Box<dyn std::error::Error>> {
         let f = std::fs::OpenOptions::new()
             .write(true)
             .create(true)
@@ -78,21 +82,43 @@ impl Todo {
         Ok(())
     }
 
-    fn complete(&mut self, key: &String) -> Option<()> {
+    pub fn complete(&mut self, key: &String) -> Option<()> {
         match self.map.get_mut(key) {
             Some(v) => Some(*v = false),
             None => None,
         }
     }
 
-    fn show(&self) {
+    pub fn show(&self) {
         for (key, &val) in &self.map {
             let status = if val { "incomplete" } else { "complete" };
             println!("{}: {}", key, status);
         }
     }
 
-    fn remove(&mut self, key: &String) -> Option<()> {
+    pub fn show_c(&self) {
+        for (key, &val) in &self.map {
+            let status = if val { "incomplete" } else { "complete" };
+            if status == "complete" {
+                println!("{} {}",key,status);
+            }
+        }
+    }
+
+    pub fn show_ic(&self) {
+        for (key, &val) in &self.map {
+            let status = if val { "incomplete" } else { "complete" };
+            if status == "incomplete" {
+                println!("{} {}",key,status);
+            }
+        }
+    }
+
+    pub fn remove(&mut self, key: &String) -> Option<()> {
         self.map.remove(key).map(|_| ())
+    }
+
+    pub fn get_map(&self) -> &HashMap<String, bool> {
+        &self.map
     }
 }
